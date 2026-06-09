@@ -70,12 +70,17 @@ const seedAccounts: Account[] = [
 
 const seedInvestments: Investment[] = [];
 
+const seedMealVoucher: MealVoucherEntry[] = [];
+
 interface FinanceContextValue {
   transactions: Transaction[];
   accounts: Account[];
   investments: Investment[];
+  mealVoucher: MealVoucherEntry[];
+  mealVoucherBalance: number;
   addTransaction: (t: Omit<Transaction, "id">) => void;
   addInvestment: (i: Omit<Investment, "id" | "last_updated">) => void;
+  addMealVoucherEntry: (e: Omit<MealVoucherEntry, "id">) => void;
 }
 
 const FinanceContext = createContext<FinanceContextValue | null>(null);
@@ -84,12 +89,24 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   const [transactions, setTransactions] = useState<Transaction[]>(seedTransactions);
   const [accounts] = useState<Account[]>(seedAccounts);
   const [investments, setInvestments] = useState<Investment[]>(seedInvestments);
+  const [mealVoucher, setMealVoucher] = useState<MealVoucherEntry[]>(seedMealVoucher);
+
+  const mealVoucherBalance = useMemo(
+    () =>
+      mealVoucher.reduce(
+        (s, e) => s + (e.type === "recharge" ? e.amount : -e.amount),
+        0,
+      ),
+    [mealVoucher],
+  );
 
   const value = useMemo<FinanceContextValue>(
     () => ({
       transactions,
       accounts,
       investments,
+      mealVoucher,
+      mealVoucherBalance,
       addTransaction: (t) => {
         setTransactions((prev) => [{ ...t, id: crypto.randomUUID() }, ...prev]);
       },
@@ -99,8 +116,11 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
           { ...i, id: crypto.randomUUID(), last_updated: new Date().toISOString() },
         ]);
       },
+      addMealVoucherEntry: (e) => {
+        setMealVoucher((prev) => [{ ...e, id: crypto.randomUUID() }, ...prev]);
+      },
     }),
-    [transactions, accounts, investments],
+    [transactions, accounts, investments, mealVoucher, mealVoucherBalance],
   );
 
   return <FinanceContext.Provider value={value}>{children}</FinanceContext.Provider>;
