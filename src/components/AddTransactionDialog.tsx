@@ -62,8 +62,8 @@ export function AddTransactionDialog({
       type,
       amount: value,
       description: description.trim(),
-      category,
-      account_id: accountId,
+      category: type === "investment" ? "Investimento" : category,
+      account_id: type === "investment" ? "inter" : accountId,
       date: new Date(date).toISOString(),
     });
     setLoading(false);
