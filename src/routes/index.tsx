@@ -39,13 +39,18 @@ function Dashboard() {
 function DashboardContent() {
   const { transactions, accounts, investments } = useFinance();
 
-  const main = accounts.find((a) => a.id === "main")!;
   const inter = accounts.find((a) => a.id === "inter")!;
   const itau = accounts.find((a) => a.id === "itau")!;
+  const accountsBalance = accounts.reduce((s, a) => s + a.current_balance, 0);
 
-  const investmentsTotal = investments.length
-    ? investments[investments.length - 1].total_amount
-    : 0;
+  // Total investido = soma do último registro de cada corretora (em BRL)
+  const investmentsTotal = useMemo(() => {
+    const latest = new Map<string, number>();
+    [...investments]
+      .sort((a, b) => new Date(a.last_updated).getTime() - new Date(b.last_updated).getTime())
+      .forEach((i) => latest.set(i.broker, i.total_amount));
+    return Array.from(latest.values()).reduce((s, v) => s + v, 0);
+  }, [investments]);
 
   const interBill = transactions
     .filter((t) => t.account_id === "inter" && t.type === "expense")
@@ -66,7 +71,7 @@ function DashboardContent() {
 
     const today = new Date();
     const months: { label: string; patrimonio?: number; projecao?: number }[] = [];
-    let running = main.current_balance + investmentsTotal;
+    let running = accountsBalance + investmentsTotal;
 
     for (let i = 5; i >= 0; i--) {
       const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
@@ -84,7 +89,6 @@ function DashboardContent() {
     const avgExpense = values.length ? values.reduce((s, v) => s + v.expense, 0) / values.length : 0;
     const delta = avgIncome - avgExpense;
     let proj = months[months.length - 1].patrimonio!;
-    // bridge point
     months[months.length - 1].projecao = proj;
     for (let i = 1; i <= 3; i++) {
       const d = new Date(today.getFullYear(), today.getMonth() + i, 1);
@@ -95,7 +99,7 @@ function DashboardContent() {
       });
     }
     return months;
-  }, [transactions, main, investmentsTotal]);
+  }, [transactions, accountsBalance, investmentsTotal]);
 
   const expensesByCategory = useMemo(() => {
     const map: Record<string, number> = {};
@@ -133,8 +137,8 @@ function DashboardContent() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <SummaryCard
-          label="Saldo atual"
-          value={formatBRL(main.current_balance)}
+          label="Saldo em contas"
+          value={formatBRL(accountsBalance)}
           icon={<Wallet className="h-4 w-4" />}
         />
         <SummaryCard

@@ -28,7 +28,7 @@ const MONTH_LABELS = [
 
 function Page() {
   const { accounts, transactions } = useFinance();
-  const cards = accounts.filter((a) => a.id !== "main");
+  const cards = accounts;
 
   // offset 0 = current cycle (the bill that will close this month or next)
   const [offset, setOffset] = useState(0);

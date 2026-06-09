@@ -32,7 +32,7 @@ export function AddTransactionDialog({
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
-  const [accountId, setAccountId] = useState<AccountId>("main");
+  const [accountId, setAccountId] = useState<AccountId>("inter");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +41,7 @@ export function AddTransactionDialog({
     setAmount("");
     setDescription("");
     setCategory(CATEGORIES[0]);
-    setAccountId("main");
+    setAccountId("inter");
     setDate(new Date().toISOString().slice(0, 10));
   };
 
