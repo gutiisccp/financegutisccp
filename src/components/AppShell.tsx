@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, ArrowLeftRight, CreditCard, TrendingUp, Plus } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, CreditCard, TrendingUp, Plus, Utensils } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ const nav = [
   { to: "/transacoes", label: "Transações", icon: ArrowLeftRight },
   { to: "/faturas", label: "Faturas", icon: CreditCard },
   { to: "/investimentos", label: "Investimentos", icon: TrendingUp },
+  { to: "/vale-refeicao", label: "Vale Refeição", icon: Utensils },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {

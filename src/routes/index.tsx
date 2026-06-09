@@ -15,7 +15,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
-import { Wallet, TrendingUp, CreditCard } from "lucide-react";
+import { Wallet, TrendingUp, CreditCard, Utensils } from "lucide-react";
 import { useMemo } from "react";
 
 export const Route = createFileRoute("/")({
@@ -37,7 +37,7 @@ function Dashboard() {
 }
 
 function DashboardContent() {
-  const { transactions, accounts, investments } = useFinance();
+  const { transactions, accounts, investments, mealVoucherBalance } = useFinance();
 
   const inter = accounts.find((a) => a.id === "inter")!;
   const itau = accounts.find((a) => a.id === "itau")!;
@@ -135,7 +135,7 @@ function DashboardContent() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <SummaryCard
           label="Saldo em contas"
           value={formatBRL(accountsBalance)}
@@ -158,6 +158,11 @@ function DashboardContent() {
           value={formatBRL(itauBill)}
           icon={<CreditCard className="h-4 w-4" />}
           tone="expense"
+        />
+        <SummaryCard
+          label="Vale Refeição"
+          value={formatBRL(mealVoucherBalance)}
+          icon={<Utensils className="h-4 w-4" />}
         />
       </div>
 
