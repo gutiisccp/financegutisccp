@@ -41,31 +41,15 @@ export const CATEGORIES = [
   "Outros",
 ];
 
-const today = new Date();
-const daysAgo = (n: number) =>
-  new Date(today.getFullYear(), today.getMonth(), today.getDate() - n).toISOString();
-
-const seedTransactions: Transaction[] = [
-  { id: "t1", type: "income", amount: 8500, description: "Salário", category: "Salário", account_id: "main", date: daysAgo(2) },
-  { id: "t2", type: "expense", amount: 320, description: "Supermercado", category: "Alimentação", account_id: "inter", date: daysAgo(3) },
-  { id: "t3", type: "expense", amount: 89, description: "Uber", category: "Transporte", account_id: "itau", date: daysAgo(4) },
-  { id: "t4", type: "expense", amount: 1800, description: "Aluguel", category: "Moradia", account_id: "main", date: daysAgo(5) },
-  { id: "t5", type: "investment", amount: 1000, description: "Aporte CDB", category: "Outros", account_id: "main", date: daysAgo(6) },
-  { id: "t6", type: "expense", amount: 145, description: "Cinema + jantar", category: "Lazer", account_id: "inter", date: daysAgo(7) },
-  { id: "t7", type: "expense", amount: 230, description: "Farmácia", category: "Saúde", account_id: "itau", date: daysAgo(10) },
-  { id: "t8", type: "expense", amount: 410, description: "Roupas", category: "Compras", account_id: "inter", date: daysAgo(12) },
-];
+const seedTransactions: Transaction[] = [];
 
 const seedAccounts: Account[] = [
-  { id: "main", name: "Conta Principal", current_balance: 12450, credit_limit: 0 },
+  { id: "main", name: "Conta Principal", current_balance: 0, credit_limit: 0 },
   { id: "inter", name: "Banco Inter", current_balance: 0, credit_limit: 5000, closing_day: 25 },
   { id: "itau", name: "Banco Itaú", current_balance: 0, credit_limit: 8000, closing_day: 10 },
 ];
 
-const seedInvestments: Investment[] = [
-  { id: "i1", total_amount: 28500, last_updated: daysAgo(15), note: "Saldo inicial" },
-  { id: "i2", total_amount: 29500, last_updated: daysAgo(6), note: "Aporte CDB" },
-];
+const seedInvestments: Investment[] = [];
 
 interface FinanceContextValue {
   transactions: Transaction[];
