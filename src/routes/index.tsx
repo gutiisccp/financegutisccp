@@ -159,6 +159,11 @@ function DashboardContent() {
           icon={<CreditCard className="h-4 w-4" />}
           tone="expense"
         />
+        <SummaryCard
+          label="Vale Refeição"
+          value={formatBRL(mealVoucherBalance)}
+          icon={<Utensils className="h-4 w-4" />}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
