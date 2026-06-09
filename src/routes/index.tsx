@@ -37,7 +37,7 @@ function Dashboard() {
 }
 
 function DashboardContent() {
-  const { transactions, accounts, investments } = useFinance();
+  const { transactions, accounts, investments, mealVoucherBalance } = useFinance();
 
   const inter = accounts.find((a) => a.id === "inter")!;
   const itau = accounts.find((a) => a.id === "itau")!;
