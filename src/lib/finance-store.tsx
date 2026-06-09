@@ -45,8 +45,8 @@ const seedTransactions: Transaction[] = [];
 
 const seedAccounts: Account[] = [
   { id: "main", name: "Conta Principal", current_balance: 0, credit_limit: 0 },
-  { id: "inter", name: "Banco Inter", current_balance: 0, credit_limit: 5000, closing_day: 25 },
-  { id: "itau", name: "Banco Itaú", current_balance: 0, credit_limit: 8000, closing_day: 10 },
+  { id: "inter", name: "Banco Inter", current_balance: 0, credit_limit: 6800, closing_day: 25 },
+  { id: "itau", name: "Banco Itaú", current_balance: 0, credit_limit: 8570, closing_day: 10 },
 ];
 
 const seedInvestments: Investment[] = [];
