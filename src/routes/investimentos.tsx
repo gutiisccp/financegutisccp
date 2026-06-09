@@ -171,7 +171,7 @@ function Page() {
                 </span>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">
-                Soma de EQI Investimentos e CryptoMoeda convertida em BRL.
+                Soma de Todos Investimentos
               </p>
             </CardContent>
           </Card>
