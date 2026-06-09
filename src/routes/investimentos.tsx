@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TrendingUp, ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react";
+import { TrendingUp, ArrowUpRight, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/investimentos")({
   head: () => ({ meta: [{ title: "Investimentos" }] }),
