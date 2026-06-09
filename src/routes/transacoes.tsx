@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useFinance, formatBRL } from "@/lib/finance-store";
 import { Card, CardContent } from "@/components/ui/card";
+import { Wallet } from "lucide-react";
 
 export const Route = createFileRoute("/transacoes")({
   head: () => ({ meta: [{ title: "Transações" }] }),
