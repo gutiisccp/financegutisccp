@@ -1,6 +1,6 @@
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { LayoutDashboard, ArrowLeftRight, CreditCard, TrendingUp, Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AddTransactionDialog } from "./AddTransactionDialog";
@@ -12,7 +12,7 @@ const nav = [
   { to: "/investimentos", label: "Investimentos", icon: TrendingUp },
 ] as const;
 
-export function AppShell() {
+export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [openAdd, setOpenAdd] = useState(false);
 
@@ -53,7 +53,6 @@ export function AppShell() {
         </aside>
 
         <main className="flex-1 px-5 py-8 md:px-10">
-          {/* Mobile header */}
           <div className="mb-6 flex items-center justify-between md:hidden">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 rounded-md bg-foreground" />
@@ -80,7 +79,7 @@ export function AppShell() {
               );
             })}
           </div>
-          <Outlet />
+          {children}
         </main>
       </div>
       <AddTransactionDialog open={openAdd} onOpenChange={setOpenAdd} />
