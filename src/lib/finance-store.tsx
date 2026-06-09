@@ -33,6 +33,16 @@ export interface Investment {
   note?: string;
 }
 
+export type MealVoucherType = "recharge" | "expense";
+
+export interface MealVoucherEntry {
+  id: string;
+  type: MealVoucherType;
+  amount: number;
+  description: string;
+  date: string; // ISO
+}
+
 export const BROKER_LABELS: Record<Broker, string> = {
   EQI: "EQI Investimentos",
   Crypto: "CryptoMoeda",
