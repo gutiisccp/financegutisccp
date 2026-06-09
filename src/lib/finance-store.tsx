@@ -1,7 +1,8 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 
 export type TransactionType = "income" | "expense" | "investment";
-export type AccountId = "main" | "inter" | "itau";
+export type AccountId = "inter" | "itau";
+export type Broker = "EQI" | "Crypto";
 
 export interface Transaction {
   id: string;
@@ -23,10 +24,19 @@ export interface Account {
 
 export interface Investment {
   id: string;
-  total_amount: number;
+  broker: Broker;
+  total_amount: number; // valor total em BRL
+  original_amount?: number; // valor original (ex: USD para crypto)
+  currency?: "BRL" | "USD";
+  usd_rate?: number; // taxa USD->BRL usada na conversão
   last_updated: string;
   note?: string;
 }
+
+export const BROKER_LABELS: Record<Broker, string> = {
+  EQI: "EQI Investimentos",
+  Crypto: "CryptoMoeda",
+};
 
 export const CATEGORIES = [
   "Alimentação",
@@ -44,7 +54,6 @@ export const CATEGORIES = [
 const seedTransactions: Transaction[] = [];
 
 const seedAccounts: Account[] = [
-  { id: "main", name: "Conta Principal", current_balance: 0, credit_limit: 0 },
   { id: "inter", name: "Banco Inter", current_balance: 0, credit_limit: 6800, closing_day: 25 },
   { id: "itau", name: "Banco Itaú", current_balance: 0, credit_limit: 8570, closing_day: 10 },
 ];
@@ -56,7 +65,7 @@ interface FinanceContextValue {
   accounts: Account[];
   investments: Investment[];
   addTransaction: (t: Omit<Transaction, "id">) => void;
-  addInvestment: (amount: number, note?: string) => void;
+  addInvestment: (i: Omit<Investment, "id" | "last_updated">) => void;
 }
 
 const FinanceContext = createContext<FinanceContextValue | null>(null);
@@ -74,10 +83,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       addTransaction: (t) => {
         setTransactions((prev) => [{ ...t, id: crypto.randomUUID() }, ...prev]);
       },
-      addInvestment: (amount, note) => {
+      addInvestment: (i) => {
         setInvestments((prev) => [
           ...prev,
-          { id: crypto.randomUUID(), total_amount: amount, last_updated: new Date().toISOString(), note },
+          { ...i, id: crypto.randomUUID(), last_updated: new Date().toISOString() },
         ]);
       },
     }),
@@ -95,3 +104,6 @@ export function useFinance() {
 
 export const formatBRL = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+export const formatUSD = (n: number) =>
+  n.toLocaleString("en-US", { style: "currency", currency: "USD" });
