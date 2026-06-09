@@ -135,7 +135,7 @@ function DashboardContent() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <SummaryCard
           label="Saldo em contas"
           value={formatBRL(accountsBalance)}
