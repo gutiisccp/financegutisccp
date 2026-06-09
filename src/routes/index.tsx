@@ -66,13 +66,13 @@ function DashboardContent() {
 
     const today = new Date();
     const months: { label: string; patrimonio?: number; projecao?: number }[] = [];
-    let running = main.current_balance + investmentsTotal - 15000;
+    let running = main.current_balance + investmentsTotal;
 
     for (let i = 5; i >= 0; i--) {
       const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
       const m = monthly[key] || { income: 0, expense: 0 };
-      running += m.income - m.expense + 800;
+      running += m.income - m.expense;
       months.push({
         label: d.toLocaleDateString("pt-BR", { month: "short" }),
         patrimonio: Math.round(running),
@@ -120,6 +120,8 @@ function DashboardContent() {
     "var(--color-muted-foreground)",
   ];
 
+  const hasTransactions = transactions.length > 0;
+
   return (
     <div className="space-y-8">
       <header>
@@ -162,24 +164,31 @@ function DashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={projectionData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                  <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="label" stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `R$${Math.round(v / 1000)}k`} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "var(--color-card)",
-                      border: "1px solid var(--color-border)",
-                      borderRadius: 8,
-                      fontSize: 12,
-                    }}
-                    formatter={(v: number) => formatBRL(v)}
-                  />
-                  <Line type="monotone" dataKey="patrimonio" stroke="var(--color-foreground)" strokeWidth={2} dot={false} name="Patrimônio" />
-                  <Line type="monotone" dataKey="projecao" stroke="var(--color-investment)" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Projeção" />
-                </LineChart>
-              </ResponsiveContainer>
+              {hasTransactions ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={projectionData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="label" stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `R$${Math.round(v / 1000)}k`} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "var(--color-card)",
+                        border: "1px solid var(--color-border)",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                      formatter={(v: number) => formatBRL(v)}
+                    />
+                    <Line type="monotone" dataKey="patrimonio" stroke="var(--color-foreground)" strokeWidth={2} dot={false} name="Patrimônio" />
+                    <Line type="monotone" dataKey="projecao" stroke="var(--color-investment)" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Projeção" />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
+                  <TrendingUp className="h-8 w-8 opacity-40" />
+                  <p className="text-sm">Adicione transações para ver a projeção.</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -190,32 +199,39 @@ function DashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={expensesByCategory}
-                    dataKey="value"
-                    nameKey="name"
-                    innerRadius={50}
-                    outerRadius={80}
-                    paddingAngle={2}
-                  >
-                    {expensesByCategory.map((_, i) => (
-                      <Cell key={i} fill={pieColors[i % pieColors.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "var(--color-card)",
-                      border: "1px solid var(--color-border)",
-                      borderRadius: 8,
-                      fontSize: 12,
-                    }}
-                    formatter={(v: number) => formatBRL(v)}
-                  />
-                  <Legend wrapperStyle={{ fontSize: 11 }} />
-                </PieChart>
-              </ResponsiveContainer>
+              {expensesByCategory.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={expensesByCategory}
+                      dataKey="value"
+                      nameKey="name"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={2}
+                    >
+                      {expensesByCategory.map((_, i) => (
+                        <Cell key={i} fill={pieColors[i % pieColors.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "var(--color-card)",
+                        border: "1px solid var(--color-border)",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                      formatter={(v: number) => formatBRL(v)}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
+                  <Wallet className="h-8 w-8 opacity-40" />
+                  <p className="text-sm">Nenhuma despesa registrada.</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -227,40 +243,47 @@ function DashboardContent() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th className="pb-2 font-medium">Data</th>
-                  <th className="pb-2 font-medium">Descrição</th>
-                  <th className="pb-2 font-medium">Categoria</th>
-                  <th className="pb-2 text-right font-medium">Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recent.map((t) => (
-                  <tr key={t.id} className="border-b border-border/60 last:border-0">
-                    <td className="py-3 text-muted-foreground">
-                      {new Date(t.date).toLocaleDateString("pt-BR")}
-                    </td>
-                    <td className="py-3">{t.description}</td>
-                    <td className="py-3 text-muted-foreground">{t.category}</td>
-                    <td
-                      className={
-                        "py-3 text-right font-medium " +
-                        (t.type === "income"
-                          ? "text-income"
-                          : t.type === "investment"
-                            ? "text-investment"
-                            : "text-expense")
-                      }
-                    >
-                      {t.type === "expense" ? "-" : "+"}
-                      {formatBRL(t.amount)}
-                    </td>
+            {recent.length > 0 ? (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="pb-2 font-medium">Data</th>
+                    <th className="pb-2 font-medium">Descrição</th>
+                    <th className="pb-2 font-medium">Categoria</th>
+                    <th className="pb-2 text-right font-medium">Valor</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {recent.map((t) => (
+                    <tr key={t.id} className="border-b border-border/60 last:border-0">
+                      <td className="py-3 text-muted-foreground">
+                        {new Date(t.date).toLocaleDateString("pt-BR")}
+                      </td>
+                      <td className="py-3">{t.description}</td>
+                      <td className="py-3 text-muted-foreground">{t.category}</td>
+                      <td
+                        className={
+                          "py-3 text-right font-medium " +
+                          (t.type === "income"
+                            ? "text-income"
+                            : t.type === "investment"
+                              ? "text-investment"
+                              : "text-expense")
+                        }
+                      >
+                        {t.type === "expense" ? "-" : "+"}
+                        {formatBRL(t.amount)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-2 py-12 text-muted-foreground">
+                <Wallet className="h-8 w-8 opacity-40" />
+                <p className="text-sm">Nenhuma transação cadastrada.</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
