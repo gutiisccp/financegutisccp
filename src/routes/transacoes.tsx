@@ -39,29 +39,40 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {sorted.map((t) => (
-                    <tr key={t.id} className="border-b border-border/60 last:border-0">
-                      <td className="px-5 py-3 text-muted-foreground">
-                        {new Date(t.date).toLocaleDateString("pt-BR")}
-                      </td>
-                      <td className="px-5 py-3">{t.description}</td>
-                      <td className="px-5 py-3 text-muted-foreground">{t.category}</td>
-                      <td className="px-5 py-3 text-muted-foreground">{accName(t.account_id)}</td>
-                      <td
-                        className={
-                          "px-5 py-3 text-right font-medium " +
-                          (t.type === "income"
-                            ? "text-income"
-                            : t.type === "investment"
-                              ? "text-investment"
-                              : "text-expense")
-                        }
-                      >
-                        {t.type === "expense" ? "-" : "+"}
-                        {formatBRL(t.amount)}
+                  {sorted.length > 0 ? (
+                    sorted.map((t) => (
+                      <tr key={t.id} className="border-b border-border/60 last:border-0">
+                        <td className="px-5 py-3 text-muted-foreground">
+                          {new Date(t.date).toLocaleDateString("pt-BR")}
+                        </td>
+                        <td className="px-5 py-3">{t.description}</td>
+                        <td className="px-5 py-3 text-muted-foreground">{t.category}</td>
+                        <td className="px-5 py-3 text-muted-foreground">{accName(t.account_id)}</td>
+                        <td
+                          className={
+                            "px-5 py-3 text-right font-medium " +
+                            (t.type === "income"
+                              ? "text-income"
+                              : t.type === "investment"
+                                ? "text-investment"
+                                : "text-expense")
+                          }
+                        >
+                          {t.type === "expense" ? "-" : "+"}
+                          {formatBRL(t.amount)}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5}>
+                        <div className="flex flex-col items-center justify-center gap-2 py-12 text-muted-foreground">
+                          <Wallet className="h-8 w-8 opacity-40" />
+                          <p className="text-sm">Nenhuma transação cadastrada. Clique em "Nova transação" para começar.</p>
+                        </div>
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
