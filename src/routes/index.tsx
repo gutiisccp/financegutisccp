@@ -15,7 +15,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
-import { Wallet, TrendingUp, CreditCard } from "lucide-react";
+import { Wallet, TrendingUp, CreditCard, Utensils } from "lucide-react";
 import { useMemo } from "react";
 
 export const Route = createFileRoute("/")({
