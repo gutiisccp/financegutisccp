@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ValeRefeicaoRouteImport } from './routes/vale-refeicao'
 import { Route as TransacoesRouteImport } from './routes/transacoes'
 import { Route as InvestimentosRouteImport } from './routes/investimentos'
 import { Route as FaturasRouteImport } from './routes/faturas'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ValeRefeicaoRoute = ValeRefeicaoRouteImport.update({
+  id: '/vale-refeicao',
+  path: '/vale-refeicao',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransacoesRoute = TransacoesRouteImport.update({
   id: '/transacoes',
   path: '/transacoes',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/faturas': typeof FaturasRoute
   '/investimentos': typeof InvestimentosRoute
   '/transacoes': typeof TransacoesRoute
+  '/vale-refeicao': typeof ValeRefeicaoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/faturas': typeof FaturasRoute
   '/investimentos': typeof InvestimentosRoute
   '/transacoes': typeof TransacoesRoute
+  '/vale-refeicao': typeof ValeRefeicaoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,25 @@ export interface FileRoutesById {
   '/faturas': typeof FaturasRoute
   '/investimentos': typeof InvestimentosRoute
   '/transacoes': typeof TransacoesRoute
+  '/vale-refeicao': typeof ValeRefeicaoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/faturas' | '/investimentos' | '/transacoes'
+  fullPaths:
+    | '/'
+    | '/faturas'
+    | '/investimentos'
+    | '/transacoes'
+    | '/vale-refeicao'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/faturas' | '/investimentos' | '/transacoes'
-  id: '__root__' | '/' | '/faturas' | '/investimentos' | '/transacoes'
+  to: '/' | '/faturas' | '/investimentos' | '/transacoes' | '/vale-refeicao'
+  id:
+    | '__root__'
+    | '/'
+    | '/faturas'
+    | '/investimentos'
+    | '/transacoes'
+    | '/vale-refeicao'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +87,18 @@ export interface RootRouteChildren {
   FaturasRoute: typeof FaturasRoute
   InvestimentosRoute: typeof InvestimentosRoute
   TransacoesRoute: typeof TransacoesRoute
+  ValeRefeicaoRoute: typeof ValeRefeicaoRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vale-refeicao': {
+      id: '/vale-refeicao'
+      path: '/vale-refeicao'
+      fullPath: '/vale-refeicao'
+      preLoaderRoute: typeof ValeRefeicaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transacoes': {
       id: '/transacoes'
       path: '/transacoes'
@@ -107,7 +135,18 @@ const rootRouteChildren: RootRouteChildren = {
   FaturasRoute: FaturasRoute,
   InvestimentosRoute: InvestimentosRoute,
   TransacoesRoute: TransacoesRoute,
+  ValeRefeicaoRoute: ValeRefeicaoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
